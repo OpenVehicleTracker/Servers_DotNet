@@ -10,6 +10,7 @@ using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
 using dotnet.openvehicletracker.org.Filters;
 using dotnet.openvehicletracker.org.Models;
+using dotnet.openvehicletracker.org.Models.Entities;
 
 namespace dotnet.openvehicletracker.org.Controllers
 {
@@ -263,7 +264,7 @@ namespace dotnet.openvehicletracker.org.Controllers
             if (ModelState.IsValid)
             {
                 // Insert a new user into the database
-                using (UsersContext db = new UsersContext())
+                using (OVTContext db = new OVTContext())
                 {
                     UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == model.UserName.ToLower());
                     // Check if user already exists

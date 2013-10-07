@@ -5,6 +5,7 @@ using System.Threading;
 using System.Web.Mvc;
 using WebMatrix.WebData;
 using dotnet.openvehicletracker.org.Models;
+using dotnet.openvehicletracker.org.Models.Entities;
 
 namespace dotnet.openvehicletracker.org.Filters
 {
@@ -25,11 +26,11 @@ namespace dotnet.openvehicletracker.org.Filters
         {
             public SimpleMembershipInitializer()
             {
-                Database.SetInitializer<UsersContext>(null);
+                Database.SetInitializer<OVTContext>(null);
 
                 try
                 {
-                    using (var context = new UsersContext())
+                    using (var context = new OVTContext())
                     {
                         if (!context.Database.Exists())
                         {
