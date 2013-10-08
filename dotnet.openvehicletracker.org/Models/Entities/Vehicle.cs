@@ -14,6 +14,9 @@ namespace dotnet.openvehicletracker.org.Models.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [MaxLength(80)]
         public string Name { get; set; }
+
+        public virtual Fleet Fleet { get; set; }
     }
 }

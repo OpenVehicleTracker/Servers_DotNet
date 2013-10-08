@@ -187,6 +187,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\api\BaseApiController.cs" />
+    <Compile Include="Controllers\api\fleetController.cs" />
+    <Compile Include="Controllers\api\organizationController.cs" />
     <Compile Include="Controllers\BaseOVTController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
@@ -196,6 +199,10 @@
     <Compile Include="Migrations\201310072316580_Initial.cs" />
     <Compile Include="Migrations\201310072316580_Initial.Designer.cs">
       <DependentUpon>201310072316580_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201310081514395_Relationships.cs" />
+    <Compile Include="Migrations\201310081514395_Relationships.Designer.cs">
+      <DependentUpon>201310081514395_Relationships.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
@@ -335,6 +342,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201310072316580_Initial.resx">
       <DependentUpon>201310072316580_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201310081514395_Relationships.resx">
+      <DependentUpon>201310081514395_Relationships.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
