@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dotnet.openvehicletracker.org.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,14 +15,13 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         {
             try
             {
-                var organization = Entities.Organizations.Where(m => m.Name == orgname).FirstOrDefault();
-                if (organization == null)
-                    return OrganizationNotFoundResponse();
-
-                if (!string.IsNullOrEmpty(name))
-                    return organization.Fleets.Where(m => m.Name == name).FirstOrDefault();
-                else
-                    return organization.Fleets;
+                Organization organization;
+                GetOrganizationEntities(orgname, out organization);
+                return organization.Fleets.GetItemByNameOrList(name);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFoundResponse(ex);
             }
             catch (Exception ex)
             {
@@ -38,14 +38,22 @@ namespace dotnet.openvehicletracker.org.Controllers.api
                 if (string.IsNullOrWhiteSpace(name))
                     return InvalidResponse();
 
-                var organization = GetOrganizationByName(orgname);
+                Organization organization;
+                GetOrganizationEntities(orgname, out organization);
 
                 if (organization.Fleets.Any(m => m.Name == name))
                     return ExistsResponse();
 
+                if (!organization.NameIsAllowed(name))
+                    return ReservedNameResponse();
+
                 Entities.Fleets.Add(new Models.Entities.Fleet() { Organization = organization, Name = name });
                 Entities.SaveChanges();
                 return CreatedResponse();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFoundResponse(ex);
             }
             catch (Exception ex)
             {

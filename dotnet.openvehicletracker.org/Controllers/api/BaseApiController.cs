@@ -14,7 +14,9 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         protected class StatusResponse
         {
             public static readonly StatusResponse Created = new StatusResponse() { status = "created", code = HttpStatusCode.Created };
+            public static readonly StatusResponse Logged = new StatusResponse() { status = "logged", code = HttpStatusCode.Created };
             public static readonly StatusResponse Exists = new StatusResponse() { status = "exists", code = HttpStatusCode.Conflict };
+            public static readonly StatusResponse Reserved = new StatusResponse() { status = "reserved", code = HttpStatusCode.Conflict };
             public static readonly StatusResponse Invalid = new StatusResponse() { status = "invalid", code = HttpStatusCode.Conflict };
             public static readonly StatusResponse Error = new StatusResponse() { status = "error", code = HttpStatusCode.InternalServerError };
             public static readonly StatusResponse NotFound = new StatusResponse() { status = "unknown", code = HttpStatusCode.NotFound };
@@ -24,12 +26,13 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         }
 
         protected HttpResponseMessage CreatedResponse() { return CreateResponse(StatusResponse.Created); }
+        protected HttpResponseMessage LoggedResponse() { return CreateResponse(StatusResponse.Logged); }
         protected HttpResponseMessage InvalidResponse() { return CreateResponse(StatusResponse.Invalid); }
         protected HttpResponseMessage ExistsResponse() { return CreateResponse(StatusResponse.Exists); }
+        protected HttpResponseMessage ReservedNameResponse() { return CreateResponse(StatusResponse.Reserved); }
         protected HttpResponseMessage ErrorResponse(Exception ignored = null) { return CreateResponse(StatusResponse.Error); }
-        protected HttpResponseMessage OrganizationNotFoundResponse(Exception ignored = null) { return CreateResponse(StatusResponse.NotFound, "organization"); }
-        protected HttpResponseMessage FleetNotFoundResponse(Exception ignored = null) { return CreateResponse(StatusResponse.NotFound, "fleet"); }
-        protected HttpResponseMessage VehicleNotFoundResponse(Exception ignored = null) { return CreateResponse(StatusResponse.NotFound, "vehicle"); }
+
+        protected HttpResponseMessage NotFoundResponse(EntityNotFoundException ex) { return CreateResponse(StatusResponse.NotFound, ex.EntityTypeName); }
 
         protected HttpResponseMessage CreateResponse(StatusResponse response, string statusvalue = null)
         {
@@ -37,6 +40,23 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         }
 
         public static readonly OVTContext Entities = new OVTContext();
+
+        protected static void GetOrganizationEntities(string orgname, out Models.Entities.Organization organization)
+        {
+            organization = GetOrganizationByName(orgname, true);
+        }
+
+        protected static void GetOrganizationEntities(string orgname, string fleetname, out Models.Entities.Organization organization, out Models.Entities.Fleet fleet)
+        {
+            GetOrganizationEntities(orgname, out organization);
+            fleet = organization == null ? null : GetFleetByName(organization, fleetname, true);
+        }
+
+        protected static void GetOrganizationEntities(string orgname, string fleetname, string vehiclename, out Models.Entities.Organization organization, out Models.Entities.Fleet fleet, out Models.Entities.Vehicle vehicle)
+        {
+            GetOrganizationEntities(orgname, fleetname, out organization, out fleet);
+            vehicle = fleet == null ? null : GetVehicleByName(fleet, vehiclename, true);
+        }
 
         protected static Organization GetOrganizationByName(string orgname, bool ThrowIfNotFound = false)
         {
@@ -53,6 +73,14 @@ namespace dotnet.openvehicletracker.org.Controllers.api
             return fleet;
         }
 
+        protected static Vehicle GetVehicleByName(Fleet fleet, string vehiclename, bool ThrowIfNotFound = false)
+        {
+            if (ThrowIfNotFound && fleet == null) throw new FleetNotFoundException();
+            var vehicle = fleet.Vehicles.Where(m => m.Name == vehiclename).FirstOrDefault();
+            if (ThrowIfNotFound && vehicle == null) throw new VehicleNotFoundException();
+            return vehicle;
+        }
+
 
         protected class OrganizationNotFoundException : EntityNotFoundException
         {
@@ -62,6 +90,11 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         protected class FleetNotFoundException : EntityNotFoundException
         {
             public FleetNotFoundException() : base("fleet") { }
+        }
+
+        protected class VehicleNotFoundException : EntityNotFoundException
+        {
+            public VehicleNotFoundException() : base("vehicle") { }
         }
 
         protected class EntityNotFoundException : Exception

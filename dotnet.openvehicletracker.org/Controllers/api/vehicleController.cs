@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dotnet.openvehicletracker.org.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,18 +15,15 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         {
             try
             {
-                var organization = GetOrganizationByName(orgname);
-                if (organization == null)
-                    return OrganizationNotFoundResponse();
+                Organization organization;
+                Fleet fleet;
+                GetOrganizationEntities(orgname, fleetname, out organization, out fleet);
 
-                var fleet = GetFleetByName(organization, fleetname);
-                if (fleet == null)
-                    return FleetNotFoundResponse();
-
-                if (!string.IsNullOrEmpty(name))
-                    return fleet.Vehicles.Where(m => m.Name == name).FirstOrDefault();
-                else
-                    return fleet.Vehicles;
+                return fleet.Vehicles.GetItemByNameOrList(name);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFoundResponse(ex);
             }
             catch (Exception ex)
             {
@@ -43,20 +41,23 @@ namespace dotnet.openvehicletracker.org.Controllers.api
                 if (string.IsNullOrWhiteSpace(name))
                     return InvalidResponse();
 
-                var organization = GetOrganizationByName(orgname);
-                if (organization == null)
-                    return OrganizationNotFoundResponse();
-
-                var fleet = GetFleetByName(organization, fleetname);
-                if (fleet == null)
-                    return FleetNotFoundResponse();
+                Organization organization;
+                Fleet fleet;
+                GetOrganizationEntities(orgname, fleetname, out organization, out fleet);
 
                 if (fleet.Vehicles.Any(m => m.Name == name))
                     return ExistsResponse();
 
+                if(!fleet.NameIsAllowed(name))
+                    return ReservedNameResponse();
+
                 fleet.Vehicles.Add(new Models.Entities.Vehicle() { Fleet = fleet, Name = name });
                 Entities.SaveChanges();
                 return CreatedResponse();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFoundResponse(ex);
             }
             catch (Exception ex)
             {
