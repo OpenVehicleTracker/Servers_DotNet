@@ -212,7 +212,7 @@
     <Compile Include="Models\Entities\AspMembership\webpages_Roles.cs" />
     <Compile Include="Models\Entities\OVTContext.cs" />
     <Compile Include="Models\Entities\Fleet.cs" />
-    <Compile Include="Models\Entities\Organizations.cs" />
+    <Compile Include="Models\Entities\Organization.cs" />
     <Compile Include="Models\Entities\UserProfiles.cs" />
     <Compile Include="Models\Entities\Vehicle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
