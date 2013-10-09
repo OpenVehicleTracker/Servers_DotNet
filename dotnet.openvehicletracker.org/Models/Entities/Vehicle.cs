@@ -9,15 +9,8 @@ using System.Text;
 namespace dotnet.openvehicletracker.org.Models.Entities
 {
     [Table("Vehicles")]
-    public class Vehicle
+    public class Vehicle : BaseNamedEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        [MaxLength(80)]
-        public string Name { get; set; }
-
         [JsonIgnore]
         [Required]
         public virtual Fleet Fleet { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dotnet.openvehicletracker.org.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,10 +15,7 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         {
             try
             {
-                if (!string.IsNullOrEmpty(name))
-                    return Entities.Organizations.Where(m => m.Name == name).FirstOrDefault();
-                else
-                    return Entities.Organizations;
+                return Entities.Organizations.GetItemByNameOrList(name);
             }
             catch (Exception ex)
             {
@@ -38,7 +36,11 @@ namespace dotnet.openvehicletracker.org.Controllers.api
                 if (Entities.Organizations.Any(m => m.Name == name))
                     return ExistsResponse();
 
-                Entities.Organizations.Add(new Models.Entities.Organization() { Name = name });
+                var organization = new Models.Entities.Organization() { Name = name };
+                if (!organization.NameIsAllowed(name))
+                    return ReservedNameResponse();
+
+                Entities.Organizations.Add(organization);
                 Entities.SaveChanges();
                 return CreatedResponse();
             }

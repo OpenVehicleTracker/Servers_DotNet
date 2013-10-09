@@ -189,6 +189,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\api\BaseApiController.cs" />
     <Compile Include="Controllers\api\fleetController.cs" />
+    <Compile Include="Controllers\api\locationController.cs" />
     <Compile Include="Controllers\api\organizationController.cs" />
     <Compile Include="Controllers\api\vehicleController.cs" />
     <Compile Include="Controllers\BaseOVTController.cs" />
@@ -210,6 +211,9 @@
     <Compile Include="Models\Entities\AspMembership\webpages_Membership.cs" />
     <Compile Include="Models\Entities\AspMembership\webpages_OAuthMembership.cs" />
     <Compile Include="Models\Entities\AspMembership\webpages_Roles.cs" />
+    <Compile Include="Models\Entities\BaseNamedEntity.cs" />
+    <Compile Include="Models\Entities\Extensions.cs" />
+    <Compile Include="Models\Entities\Interfaces.cs" />
     <Compile Include="Models\Entities\Location.cs" />
     <Compile Include="Models\Entities\OVTContext.cs" />
     <Compile Include="Models\Entities\Fleet.cs" />
