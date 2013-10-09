@@ -20,6 +20,7 @@ namespace dotnet.openvehicletracker.org.Models.Entities
         public string Name { get; set; }
 
         [JsonIgnore]
+        [Required]
         public virtual Organization Organization { get; set; }
 
         [JsonIgnore]

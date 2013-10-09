@@ -15,7 +15,7 @@ namespace dotnet.openvehicletracker.org.Controllers.api
             try
             {
                 if (!string.IsNullOrEmpty(name))
-                    return Entities.Organizations.Where(m => m.Name == name);
+                    return Entities.Organizations.Where(m => m.Name == name).FirstOrDefault();
                 else
                     return Entities.Organizations;
             }

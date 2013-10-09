@@ -4,25 +4,25 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
+using System.Web;
 
 namespace dotnet.openvehicletracker.org.Models.Entities
 {
-    [Table("Vehicles")]
-    public class Vehicle
+    [Table("Locations")]
+    public class Location
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [MaxLength(80)]
-        public string Name { get; set; }
+        public DateTimeOffset time { get; set; }
+        public int vehicleId { get { return Vehicle.Id; } }
+        public double latitude { get; set; }
+        public double longitude { get; set; }
 
         [JsonIgnore]
         [Required]
-        public virtual Fleet Fleet { get; set; }
-   
-        [JsonIgnore]
-        public virtual ICollection<Location> Locations { get; set; }
+        public Vehicle Vehicle { get; set; }
+
     }
 }

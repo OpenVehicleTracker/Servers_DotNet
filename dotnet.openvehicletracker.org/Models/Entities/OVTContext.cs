@@ -18,6 +18,7 @@ namespace dotnet.openvehicletracker.org.Models.Entities
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Fleet> Fleets { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
         public DbSet<UserProfile> UserProfiles { get; set; }
 

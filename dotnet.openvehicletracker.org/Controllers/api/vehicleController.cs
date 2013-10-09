@@ -23,7 +23,7 @@ namespace dotnet.openvehicletracker.org.Controllers.api
                     return FleetNotFoundResponse();
 
                 if (!string.IsNullOrEmpty(name))
-                    return fleet.Vehicles.Where(m => m.Name == name);
+                    return fleet.Vehicles.Where(m => m.Name == name).FirstOrDefault();
                 else
                     return fleet.Vehicles;
             }
