@@ -190,6 +190,7 @@
     <Compile Include="Controllers\api\BaseApiController.cs" />
     <Compile Include="Controllers\api\fleetController.cs" />
     <Compile Include="Controllers\api\organizationController.cs" />
+    <Compile Include="Controllers\api\vehicleController.cs" />
     <Compile Include="Controllers\BaseOVTController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />

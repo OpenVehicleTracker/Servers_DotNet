@@ -7,30 +7,35 @@ using System.Web.Http;
 
 namespace dotnet.openvehicletracker.org.Controllers.api
 {
-    public class fleetController : BaseApiController
+    public class vehicleController : BaseApiController
     {
-        // GET /{organization}/fleet/{?name}
-        public dynamic Get(string orgname, string name = null)
+        // GET api/{orgname}/{fleetname}/vehicle/{?name}
+        public dynamic Get(string orgname, string fleetname, string name = null)
         {
             try
             {
-                var organization = Entities.Organizations.Where(m => m.Name == orgname).FirstOrDefault();
+                var organization = GetOrganizationByName(orgname);
                 if (organization == null)
                     return OrganizationNotFoundResponse();
 
+                var fleet = GetFleetByName(organization, fleetname);
+                if (fleet == null)
+                    return FleetNotFoundResponse();
+
                 if (!string.IsNullOrEmpty(name))
-                    return organization.Fleets.Where(m => m.Name == name).FirstOrDefault();
+                    return fleet.Vehicles.Where(m => m.Name == name);
                 else
-                    return organization.Fleets;
+                    return fleet.Vehicles;
             }
             catch (Exception ex)
             {
                 return ErrorResponse(ex);
             }
+
         }
 
-        // POST /{organization}/fleet
-        public HttpResponseMessage Post(string orgname, [FromBody]dynamic value)
+        // POST api/{orgname}/{fleetname}/vehicle
+        public HttpResponseMessage Post(string orgname, string fleetname, [FromBody]dynamic value)
         {
             try
             {
@@ -39,11 +44,17 @@ namespace dotnet.openvehicletracker.org.Controllers.api
                     return InvalidResponse();
 
                 var organization = GetOrganizationByName(orgname);
+                if (organization == null)
+                    return OrganizationNotFoundResponse();
 
-                if (organization.Fleets.Any(m => m.Name == name))
+                var fleet = GetFleetByName(organization, fleetname);
+                if (fleet == null)
+                    return FleetNotFoundResponse();
+
+                if (fleet.Vehicles.Any(m => m.Name == name))
                     return ExistsResponse();
 
-                Entities.Fleets.Add(new Models.Entities.Fleet() { Organization = organization, Name = name });
+                fleet.Vehicles.Add(new Models.Entities.Vehicle() { Fleet = fleet, Name = name });
                 Entities.SaveChanges();
                 return CreatedResponse();
             }
@@ -51,15 +62,14 @@ namespace dotnet.openvehicletracker.org.Controllers.api
             {
                 return ErrorResponse(ex);
             }
-
         }
 
-        //// PUT api/fleet/5
+        //// PUT api/vehicle/5
         //public void Put(int id, [FromBody]string value)
         //{
         //}
 
-        //// DELETE api/fleet/5
+        //// DELETE api/vehicle/5
         //public void Delete(int id)
         //{
         //}
