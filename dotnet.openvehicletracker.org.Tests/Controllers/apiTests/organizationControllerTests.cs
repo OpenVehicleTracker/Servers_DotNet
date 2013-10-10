@@ -12,17 +12,48 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
     [TestClass]
     public class organizationControllerTests : BaseApiTest
     {
-        
+
         [TestMethod]
-        public void OrganizationGetCreateTest()
+        public void OrganizationCreateGetTest()
         {
-            string testOrgNameValid = "TestOrgName";
-            string testOrgNameValid2 = "TestOrgName Too";
-            string testOrgNameReserved = "organization";
+            string testOrgName = "TestOrgName";
+            string testOrgName2 = "TestOrgName Too";
 
             System.Net.HttpStatusCode expectedCode;
             string expectedStatus;
-            
+
+            var controller = new organizationController(new MockContext());
+
+            IDbSet<Organization> result = controller.Get();
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+            CreateOrganization(controller, testOrgName);
+
+            result = controller.Get();
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count());
+
+            string actualName = result.First().Name;
+            string expectedName = testOrgName;
+            Assert.AreEqual(expectedName, actualName);
+
+            CreateOrganization(controller, testOrgName2);
+            result = controller.Get();
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+
+            Assert.IsTrue(result.Any(m => m.Name == testOrgName));
+            Assert.IsTrue(result.Any(m => m.Name == testOrgName2));
+        }
+
+        [TestMethod]
+        public void OrganizationCreateDuplicateNamesTest()
+        {
+            string testOrgNameValid = "TestOrgName";
+            System.Net.HttpStatusCode expectedCode;
+            string expectedStatus;
+
             var controller = new organizationController(new MockContext());
 
             IDbSet<Organization> result = controller.Get();
@@ -30,14 +61,9 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
             Assert.AreEqual(0, result.Count());
 
             CreateOrganization(controller, testOrgNameValid);
-            
             expectedCode = System.Net.HttpStatusCode.Conflict;
             expectedStatus = "exists";
             CreateOrganization(controller, testOrgNameValid, expectedCode, expectedStatus);
-
-            expectedCode = System.Net.HttpStatusCode.Conflict;
-            expectedStatus = "reserved";
-            CreateOrganization(controller, testOrgNameReserved, expectedCode, expectedStatus);
 
             result = controller.Get();
             Assert.IsNotNull(result);
@@ -47,14 +73,28 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
             string expectedName = testOrgNameValid;
             Assert.AreEqual(expectedName, actualName);
 
-            CreateOrganization(controller, testOrgNameValid2);
-            result = controller.Get();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Count());
-
-            Assert.IsTrue(result.Any(m => m.Name == testOrgNameValid));
-            Assert.IsTrue(result.Any(m => m.Name == testOrgNameValid2));
         }
 
+        [TestMethod]
+        public void OrganizationCreateReservedNamesTest()
+        {
+            var controller = new organizationController(new MockContext());
+
+            System.Net.HttpStatusCode expectedCode;
+            string expectedStatus;
+
+            expectedCode = System.Net.HttpStatusCode.Conflict;
+            expectedStatus = "reserved";
+
+            CreateOrganization(controller, "organization", expectedCode, expectedStatus);
+            CreateOrganization(controller, "fleet", expectedCode, expectedStatus);
+            CreateOrganization(controller, "vehicle", expectedCode, expectedStatus);
+            CreateOrganization(controller, "location", expectedCode, expectedStatus);
+
+            IDbSet<Organization> result = controller.Get();
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+        }
     }
 }
