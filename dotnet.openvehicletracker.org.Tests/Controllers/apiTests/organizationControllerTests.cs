@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using dotnet.openvehicletracker.org.Controllers.api;
-using System.Linq;
-using System.Collections;
+﻿using dotnet.openvehicletracker.org.Controllers.api;
 using dotnet.openvehicletracker.org.Models.Entities;
-using System.Data.Entity;
-using Newtonsoft.Json.Linq;
 using dotnet.openvehicletracker.org.Tests.Controllers.apiTests;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
+using System.Data.Entity;
+using System.Linq;
+using System;
 
 namespace dotnet.openvehicletracker.org.Tests.Controllers
 {
@@ -15,22 +14,46 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
     {
         
         [TestMethod]
-        public void CreateOrganizationTest()
+        public void OrganizationGetCreateTest()
         {
+            string testOrgNameValid = "TestOrgName";
+            string testOrgNameValid2 = "TestOrgName Too";
+            string testOrgNameReserved = "organization";
+
+            System.Net.HttpStatusCode expectedCode;
+            string expectedStatus;
+            
             var controller = new organizationController(new MockContext());
 
             IDbSet<Organization> result = controller.Get();
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count());
 
-            CreateRequest(controller);
+            CreateOrganization(controller, testOrgNameValid);
+            
+            expectedCode = System.Net.HttpStatusCode.Conflict;
+            expectedStatus = "exists";
+            CreateOrganization(controller, testOrgNameValid, expectedCode, expectedStatus);
 
-            var response = controller.Post(JObject.Parse("{'name':'TestOrgName'}"));
-            Assert.AreEqual(System.Net.HttpStatusCode.Created, response.StatusCode);
+            expectedCode = System.Net.HttpStatusCode.Conflict;
+            expectedStatus = "reserved";
+            CreateOrganization(controller, testOrgNameReserved, expectedCode, expectedStatus);
 
             result = controller.Get();
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count());
+
+            string actualName = result.FirstOrDefault().Name;
+            string expectedName = testOrgNameValid;
+            Assert.AreEqual(expectedName, actualName);
+
+            CreateOrganization(controller, testOrgNameValid2);
+            result = controller.Get();
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+
+            Assert.IsTrue(result.Any(m => m.Name == testOrgNameValid));
+            Assert.IsTrue(result.Any(m => m.Name == testOrgNameValid2));
         }
 
     }

@@ -8,7 +8,7 @@ using System.Web.Http;
 
 namespace dotnet.openvehicletracker.org.Controllers.api
 {
-    public class BaseApiController : ApiController
+    public abstract class BaseApiController : ApiController
     {
         private static readonly IOVTContext _Entities = new OVTContext();
         protected static IOVTContext Entities { get; private set; }
