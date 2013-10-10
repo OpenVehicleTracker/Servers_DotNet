@@ -10,6 +10,9 @@ namespace dotnet.openvehicletracker.org.Controllers.api
 {
     public class organizationController : BaseApiController
     {
+        public organizationController() : this(null) { }
+        public organizationController(IOVTContext entities = null) : base(entities) { }
+
         // GET api/organization/{?name}
         public dynamic Get(string name = null)
         {

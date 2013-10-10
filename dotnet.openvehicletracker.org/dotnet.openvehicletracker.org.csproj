@@ -214,6 +214,7 @@
     <Compile Include="Models\Entities\BaseNamedEntity.cs" />
     <Compile Include="Models\Entities\Extensions.cs" />
     <Compile Include="Models\Entities\Interfaces.cs" />
+    <Compile Include="Models\Entities\IOVTContext.cs" />
     <Compile Include="Models\Entities\Location.cs" />
     <Compile Include="Models\Entities\OVTContext.cs" />
     <Compile Include="Models\Entities\Fleet.cs" />

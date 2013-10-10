@@ -11,7 +11,10 @@ namespace dotnet.openvehicletracker.org.Controllers.api
 {
     public class locationController : BaseApiController
     {
-        // GET /{organization}/{fleet}/{vehicle}/location/{?start}
+        public locationController() : this(null) { }
+        public locationController(IOVTContext entities = null) : base(entities) { }
+
+       // GET /{organization}/{fleet}/{vehicle}/location/{?start}
         public dynamic Get(string orgname, string fleetname, string vehiclename, int? start = null)
         {
             try

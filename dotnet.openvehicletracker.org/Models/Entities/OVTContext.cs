@@ -7,7 +7,7 @@ using System.Web;
 
 namespace dotnet.openvehicletracker.org.Models.Entities
 {
-    public class OVTContext : DbContext
+    public class OVTContext : DbContext, IOVTContext
     {
 
         public OVTContext()
@@ -15,17 +15,17 @@ namespace dotnet.openvehicletracker.org.Models.Entities
         {
         }
 
-        public DbSet<Organization> Organizations { get; set; }
-        public DbSet<Fleet> Fleets { get; set; }
-        public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        public IDbSet<Organization> Organizations { get; set; }
+        public IDbSet<Fleet> Fleets { get; set; }
+        public IDbSet<Vehicle> Vehicles { get; set; }
+        public IDbSet<Location> Locations { get; set; }
 
-        public DbSet<UserProfile> UserProfiles { get; set; }
+        public IDbSet<UserProfile> UserProfiles { get; set; }
 
-        public DbSet<webpages_Membership> webpages_Membership { get; set; }
-        public DbSet<webpages_OAuthMembership> webpages_OAuthMembership { get; set; }
-        public DbSet<webpages_Roles> webpages_Roles { get; set; }
-        public DbSet<webpages_UsersInRole> UsersInRole { get; set; }
+        public IDbSet<webpages_Membership> webpages_Membership { get; set; }
+        public IDbSet<webpages_OAuthMembership> webpages_OAuthMembership { get; set; }
+        public IDbSet<webpages_Roles> webpages_Roles { get; set; }
+        public IDbSet<webpages_UsersInRole> UsersInRole { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

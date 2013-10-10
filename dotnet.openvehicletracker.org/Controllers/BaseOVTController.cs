@@ -9,6 +9,12 @@ namespace dotnet.openvehicletracker.org.Controllers
 {
     public class BaseOVTController : Controller
     {
-        public static readonly OVTContext Entities = new OVTContext();
+        private static readonly IOVTContext _Entities = new OVTContext();
+        protected static IOVTContext Entities { get; private set; }
+
+        public BaseOVTController(IOVTContext entities = null)
+        {
+            Entities = entities ?? _Entities;
+        }
     }
 }

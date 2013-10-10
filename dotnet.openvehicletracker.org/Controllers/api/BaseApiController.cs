@@ -10,6 +10,13 @@ namespace dotnet.openvehicletracker.org.Controllers.api
 {
     public class BaseApiController : ApiController
     {
+        private static readonly IOVTContext _Entities = new OVTContext();
+        protected static IOVTContext Entities { get; private set; }
+
+        public BaseApiController(IOVTContext entities = null)
+        {
+            Entities = entities ?? _Entities;
+        }
 
         protected class StatusResponse
         {
@@ -38,8 +45,6 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         {
             return Request.CreateResponse(response.code, new { status = (statusvalue ?? response.status) });
         }
-
-        public static readonly OVTContext Entities = new OVTContext();
 
         protected static void GetOrganizationEntities(string orgname, out Models.Entities.Organization organization)
         {
@@ -86,7 +91,7 @@ namespace dotnet.openvehicletracker.org.Controllers.api
         {
             public OrganizationNotFoundException() : base("organization") { }
         }
-      
+
         protected class FleetNotFoundException : EntityNotFoundException
         {
             public FleetNotFoundException() : base("fleet") { }

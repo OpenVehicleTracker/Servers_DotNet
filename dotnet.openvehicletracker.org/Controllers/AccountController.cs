@@ -16,9 +16,11 @@ namespace dotnet.openvehicletracker.org.Controllers
 {
     [Authorize]
     [InitializeSimpleMembership]
-    public class AccountController : Controller
+    public class AccountController : BaseOVTController
     {
-        //
+        public AccountController(dotnet.openvehicletracker.org.Models.Entities.IOVTContext entities = null) : base(entities) { }
+
+       //
         // GET: /Account/Login
 
         [AllowAnonymous]
