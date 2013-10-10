@@ -2,10 +2,8 @@
 using dotnet.openvehicletracker.org.Models.Entities;
 using dotnet.openvehicletracker.org.Tests.Controllers.apiTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using System.Data.Entity;
+using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace dotnet.openvehicletracker.org.Tests.Controllers
 {
@@ -14,33 +12,50 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
     {
 
         [TestMethod]
-        public void OrganizationCreateGetTest()
+        public void OrganizationGetTest()
+        {
+            string testOrgName = "orgName";
+
+            var controller = new organizationController(new MockContext());
+
+            IEnumerable<Organization> resultArray = controller.Get();
+            Assert.IsNotNull(resultArray);
+            Assert.AreEqual(0, resultArray.Count());
+
+            CreateOrganization(controller, testOrgName);
+
+            resultArray = controller.Get();
+            Assert.IsNotNull(resultArray);
+            Assert.IsInstanceOfType(resultArray, typeof(System.Data.Entity.IDbSet<Organization>));
+            Assert.AreEqual(1, resultArray.Count());
+
+            string actualName = resultArray.First().Name;
+            string expectedName = testOrgName;
+            Assert.AreEqual(expectedName, actualName);
+
+            Organization result = controller.Get(testOrgName);
+            actualName = result.Name;
+            expectedName = testOrgName;
+            Assert.AreEqual(expectedName, actualName);
+
+            result = controller.Get("none");
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void OrganizationCreateTest()
         {
             string testOrgName = "TestOrgName";
             string testOrgName2 = "TestOrgName Too";
 
-            System.Net.HttpStatusCode expectedCode;
-            string expectedStatus;
-
             var controller = new organizationController(new MockContext());
 
-            IDbSet<Organization> result = controller.Get();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count());
+            IEnumerable<Organization> result;
 
             CreateOrganization(controller, testOrgName);
-
-            result = controller.Get();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count());
-
-            string actualName = result.First().Name;
-            string expectedName = testOrgName;
-            Assert.AreEqual(expectedName, actualName);
-
             CreateOrganization(controller, testOrgName2);
+
             result = controller.Get();
-            Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count());
 
             Assert.IsTrue(result.Any(m => m.Name == testOrgName));
@@ -50,13 +65,13 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
         [TestMethod]
         public void OrganizationCreateDuplicateNamesTest()
         {
-            string testOrgNameValid = "TestOrgName";
+            string testOrgNameValid = "validOrgName";
             System.Net.HttpStatusCode expectedCode;
             string expectedStatus;
 
             var controller = new organizationController(new MockContext());
 
-            IDbSet<Organization> result = controller.Get();
+            IEnumerable<Organization> result = controller.Get();
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count());
 
@@ -91,7 +106,7 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
             CreateOrganization(controller, "vehicle", expectedCode, expectedStatus);
             CreateOrganization(controller, "location", expectedCode, expectedStatus);
 
-            IDbSet<Organization> result = controller.Get();
+            IEnumerable<Organization> result = controller.Get();
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count());
 
