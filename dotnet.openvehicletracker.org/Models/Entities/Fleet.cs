@@ -12,6 +12,12 @@ namespace dotnet.openvehicletracker.org.Models.Entities
     [Table("Fleets")]
     public class Fleet : BaseNamedEntity
     {
+
+        public Fleet()
+        {
+            if (Vehicles == null) Vehicles = new List<Vehicle>();
+        }
+
         [JsonIgnore]
         [Required]
         public virtual Organization Organization { get; set; }

@@ -124,6 +124,7 @@
   <ItemGroup>
     <Compile Include="Controllers\apiTests\BaseApiTest.cs" />
     <Compile Include="Controllers\apiTests\organizationControllerTests.cs" />
+    <Compile Include="Controllers\apiTests\fleetControllerTests.cs" />
     <Compile Include="Controllers\Mocks\MockContext.cs" />
     <Compile Include="Controllers\Mocks\MockDbSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

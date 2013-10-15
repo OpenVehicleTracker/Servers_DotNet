@@ -8,6 +8,9 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
 {
     class MockDbSet<T> : System.Data.Entity.IDbSet<T>, IEnumerable<T> where T : class, new()
     {
+        public delegate void UpdateComplexAssociationsHandler(T entity);
+        public event UpdateComplexAssociationsHandler UpdateComplexAssociations;
+
         internal Dictionary<T, MockContext.state> repo = new Dictionary<T, MockContext.state>();
 
         public T Add(T entity)
@@ -15,10 +18,17 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
             if (!repo.ContainsKey(entity))
             {
                 repo.Add(entity, MockContext.state.add);
+                OnAdd(entity);
             }
             return entity;
         }
 
+        void OnAdd(T entity)
+        {
+            if (UpdateComplexAssociations != null) // if there are any subscribers...
+                UpdateComplexAssociations(entity); // call the event, passing through T
+        }
+        
         public T Attach(T entity)
         {
             throw new NotImplementedException();

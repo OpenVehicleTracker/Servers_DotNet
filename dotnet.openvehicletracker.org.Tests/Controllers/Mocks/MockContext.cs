@@ -12,15 +12,49 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers
 
         public MockContext()
         {
-            Fleets = new MockDbSet<Fleet>();
-            Locations = new MockDbSet<Location>();
-            Organizations = new MockDbSet<Organization>();
-            Vehicles = new MockDbSet<Vehicle>();
+            var fleets=new MockDbSet<Fleet>();
+            fleets.UpdateComplexAssociations += fleets_UpdateComplexAssociations;
+            Fleets = fleets;
+
+            var locations = new MockDbSet<Location>();
+            locations.UpdateComplexAssociations += locations_UpdateComplexAssociations;
+            Locations = locations;
+
+            var organizations = new MockDbSet<Organization>();
+            organizations.UpdateComplexAssociations += organizations_UpdateComplexAssociations;
+            Organizations = organizations;
+           
+            var vehicles = new MockDbSet<Vehicle>();
+            vehicles.UpdateComplexAssociations += vehicles_UpdateComplexAssociations;
+            Vehicles = vehicles;
+            
             UserProfiles = new MockDbSet<UserProfile>();
             UsersInRole = new MockDbSet<webpages_UsersInRole>();
             webpages_Membership = new MockDbSet<webpages_Membership>();
             webpages_OAuthMembership = new MockDbSet<webpages_OAuthMembership>();
             webpages_Roles = new MockDbSet<webpages_Roles>();
+        }
+
+        void vehicles_UpdateComplexAssociations(Vehicle entity)
+        {
+            if (entity.Fleet != null)
+                entity.Fleet.Vehicles.Add(entity);
+        }
+
+        void organizations_UpdateComplexAssociations(Organization entity)
+        {
+        }
+
+        void locations_UpdateComplexAssociations(Location entity)
+        {
+            if (entity.Vehicle != null)
+                entity.Vehicle.Locations.Add(entity);
+        }
+
+        void fleets_UpdateComplexAssociations(Fleet entity)
+        {
+            if (entity.Organization != null)
+                entity.Organization.Fleets.Add(entity);
         }
 
         public IDbSet<Fleet> Fleets { get; set; }
