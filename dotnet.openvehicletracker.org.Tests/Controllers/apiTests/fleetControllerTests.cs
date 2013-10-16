@@ -90,7 +90,7 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers.apiTests
         }
 
         [TestMethod]
-        public void OrganizationCreateDuplicateNamesTest()
+        public void FleetCreateDuplicateNamesTest()
         {
             string orgName = "OrgName";
             string testFleetNameValid = "validFleetName";
@@ -123,8 +123,6 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers.apiTests
             Assert.AreEqual(expectedName, actualName);
 
         }
-
-
 
     }
 }

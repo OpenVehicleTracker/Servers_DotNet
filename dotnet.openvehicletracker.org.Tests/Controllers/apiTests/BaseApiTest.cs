@@ -42,9 +42,26 @@ namespace dotnet.openvehicletracker.org.Tests.Controllers.apiTests
             Assert.AreEqual(expectedStatus, actualStatus);
         }
 
+        public void CreateVehicle(vehicleController vehicleController, string orgName, string fleetName, string vehicleName, System.Net.HttpStatusCode expectedCode = System.Net.HttpStatusCode.Created, string expectedStatus = "created")
+        {
+            string postJson = "{'name':'" + vehicleName + "'}";
+
+            System.Net.HttpStatusCode actualCode;
+            dynamic actualStatus;
+
+            PostJsonGetResults(vehicleController, orgName, fleetName, postJson, out actualCode, out actualStatus);
+            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedStatus, actualStatus);
+        }
+        
         public void PostJsonGetResults<T>(T controller, string arg1, string postJson, out System.Net.HttpStatusCode actualCode, out dynamic actualStatus) where T : BaseApiController
         {
             PostJsonGetResults(controller, new object[] { arg1, JObject.Parse(postJson) }, out actualCode, out actualStatus);
+        }
+
+        public void PostJsonGetResults<T>(T controller, string arg1, string arg2, string postJson, out System.Net.HttpStatusCode actualCode, out dynamic actualStatus) where T : BaseApiController
+        {
+            PostJsonGetResults(controller, new object[] { arg1, arg2, JObject.Parse(postJson) }, out actualCode, out actualStatus);
         }
 
         public void PostJsonGetResults<T>(T controller, string postJson, out System.Net.HttpStatusCode actualCode, out dynamic actualStatus) where T : BaseApiController
